@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>City of Spokane | FA Org Restructure | Project Dashboard</title>
+<style>
+  :root {
+    --navy: #1b3a5c;
+    --navy-light: #2c5680;
+    --accent: #2e86ab;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --amber: #b26a00;
+    --amber-bg: #fff3e0;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #5f6b76;
+    --gray-bg: #eef1f4;
+    --border: #dde4ea;
+    --card-shadow: 0 1px 3px rgba(16, 42, 67, 0.08), 0 1px 2px rgba(16, 42, 67, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #f5f7f9;
+    color: #22303c;
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff;
+    padding: 28px 32px 22px;
+  }
+  .header-inner, main { max-width: 1080px; margin: 0 auto; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  header h1 { font-size: 1.5rem; font-weight: 600; }
+  header .client { font-size: 0.95rem; opacity: 0.85; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  header .meta { margin-top: 10px; font-size: 0.85rem; opacity: 0.8; }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 18px; border-radius: 999px;
+    font-weight: 600; font-size: 0.95rem;
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.35);
+  }
+  .status-pill .dot { width: 11px; height: 11px; border-radius: 50%; }
+  main { padding: 28px 32px 56px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--card-shadow); padding: 22px 24px; margin-bottom: 22px;
+  }
+  .card h2 {
+    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--gray); margin-bottom: 14px; font-weight: 700;
+  }
+  .summary-text { font-size: 1.02rem; }
+  /* timeline */
+  .timeline { list-style: none; }
+  .timeline li { display: flex; gap: 14px; padding: 7px 0; align-items: flex-start; }
+  .tl-marker { margin-top: 5px; width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; border: 2.5px solid; }
+  .tl-done   { background: var(--green); border-color: var(--green); }
+  .tl-active { background: #fff; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,134,171,0.25); }
+  .tl-future { background: #fff; border-color: #b8c4ce; }
+  .tl-label { flex: 1; }
+  .tl-done-text { color: var(--gray); }
+  .tl-date { font-size: 0.82rem; color: var(--gray); white-space: nowrap; }
+  .badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 9px;
+    border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .badge.done { background: var(--green-bg); color: var(--green); }
+  .badge.active { background: #e1f0f7; color: var(--accent); }
+  .badge.future { background: var(--gray-bg); color: var(--gray); }
+  .badge.risk-high { background: var(--red-bg); color: var(--red); }
+  .badge.risk-med { background: var(--amber-bg); color: var(--amber); }
+  /* action items */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filters button {
+    border: 1px solid var(--border); background: #fff; color: var(--gray);
+    border-radius: 999px; padding: 6px 16px; font-size: 0.85rem; cursor: pointer; font-weight: 600;
+  }
+  .filters button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); padding: 8px 10px; border-bottom: 2px solid var(--border); }
+  td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .owner-chip { font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .owner-tv { background: #e1f0f7; color: var(--accent); }
+  .owner-client { background: #ede7f6; color: #5e35b1; }
+  .item-done { color: var(--gray); }
+  .item-done .desc { text-decoration: line-through; }
+  .check { color: var(--green); font-weight: 700; }
+  /* decisions / meetings */
+  .log-entry { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .log-entry:last-child { border-bottom: none; }
+  .log-date { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+  .log-note { font-size: 0.85rem; color: var(--gray); margin-top: 2px; }
+  .risk-entry { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .risk-entry:last-child { border-bottom: none; }
+  footer { text-align: center; color: var(--gray); font-size: 0.8rem; padding: 0 0 36px; }
+  .empty { color: var(--gray); font-style: italic; padding: 14px 4px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div class="client" id="h-client"></div>
+        <h1 id="h-project"></h1>
+      </div>
+      <div class="status-pill" id="h-status"><span class="dot"></span><span id="h-status-text"></span></div>
+    </div>
+    <div class="meta">Prepared by Tripleview Technologies &nbsp;|&nbsp; Last updated <span id="h-updated"></span></div>
+  </div>
+</header>
+<main>
+  <div class="card">
+    <h2>Current Status</h2>
+    <p class="summary-text" id="summary"></p>
+  </div>
+
+  <div class="card">
+    <h2>Timeline &amp; Milestones</h2>
+    <ul class="timeline" id="timeline"></ul>
+  </div>
+
+  <div class="card">
+    <h2>Action Items</h2>
+    <div class="filters" id="ai-filters">
+      <button data-f="open" class="on">Open</button>
+      <button data-f="done">Completed</button>
+      <button data-f="all">All</button>
+      <span style="width:14px"></span>
+      <button data-o="all" class="on">Everyone</button>
+      <button data-o="tripleview">Tripleview</button>
+      <button data-o="client">City of Spokane</button>
+    </div>
+    <table>
+      <thead><tr><th style="width:50%">Item</th><th>Owner</th><th>Target</th><th></th></tr></thead>
+      <tbody id="ai-body"></tbody>
+    </table>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Key Decisions</h2>
+      <div id="decisions"></div>
+    </div>
+    <div class="card">
+      <h2>Watch Items &amp; Risks</h2>
+      <div id="risks"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Meeting Log</h2>
+    <div id="meetings"></div>
+  </div>
+</main>
+<footer>Questions? Contact Debbie Elliott, Tripleview Technologies &middot; delliott@tripleview.com</footer>
+
+<script>
+const DATA = {
+  client: "City of Spokane",
+  project: "Fixed Assets Org Restructure",
+  lastUpdated: "June 11, 2026",
+  status: "on-track", // on-track | at-risk | blocked
+  statusLabel: "On Track",
+  summary: "The Fixed Assets organization restructure will let Spokane accountants run depreciation and reporting by individual department, rather than under a single top-level org. The structure design is complete and validated, and new department org codes are being configured and tested in the test environment. Current focus: completing field code setup, testing asset transfers, and verifying department-level depreciation and inquiry results. Once testing wraps up, Tripleview will deliver a test plan and time estimate for the production rollout.",
+  timeline: [
+    { label: "Org structure design and validation", status: "done", date: "May 2026" },
+    { label: "New FA org codes configured in test environment", status: "active", date: "Jun 2026" },
+    { label: "Asset transfer testing (manual and bulk approaches)", status: "active", date: "Jun 2026" },
+    { label: "Department-level depreciation and inquiry verification", status: "future", date: "Jun 2026" },
+    { label: "Test plan and production time estimate delivered", status: "future", date: "TBD" },
+    { label: "Production implementation", status: "future", date: "TBD" }
+  ],
+  actionItems: [
+    { desc: "Complete FA org field code setup with corrected FA ledger account strings", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Week of Jun 9", done: false },
+    { desc: "Test depreciation by department and verify assets appear under the correct sub-orgs in inquiry", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Week of Jun 9", done: false },
+    { desc: "Test depreciation run after asset transfer and verify GL and FA reporting", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Week of Jun 9", done: false },
+    { desc: "Provide step-by-step setup procedures for Spokane staff", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Week of Jun 9", done: false },
+    { desc: "Determine which assets map to each new department org", owner: "client", ownerName: "Lauren / Spokane", due: "TBD", done: false },
+    { desc: "Decide between manual transfers and bulk transfer file approach", owner: "client", ownerName: "Lauren / Clint", due: "TBD", done: false },
+    { desc: "Count and document master assets with mismatched indices", owner: "client", ownerName: "Lauren", due: "TBD", done: false },
+    { desc: "Design new org structure and validate approach", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "May", done: true },
+    { desc: "Confirm existing top-level org can remain intact", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "May", done: true },
+    { desc: "Initial asset transfer testing in test environment", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "May", done: true }
+  ],
+  decisions: [
+    { date: "May 7, 2026", text: "Keep the existing top-level governmental org intact and add new department sub-orgs beneath it.", note: "No impact on GL accounts or existing inquiry rollups." },
+    { date: "May 7, 2026", text: "Use the FA org field code for the restructure.", note: "GL expense accounts will not change; the new orgs are FA-side only." },
+    { date: "May 7, 2026", text: "Asset transfers will use the transfer action code rather than changing GL expense accounts.", note: "Transfer reference date must be current; transfers cannot be backdated." },
+    { date: "May 7, 2026", text: "Evaluate both manual transfers and an automated bulk transfer file before choosing the rollout method.", note: "" }
+  ],
+  risks: [
+    { level: "med", text: "Asset-to-department mapping criteria not yet defined; may require manual spreadsheet work before transfers can begin." },
+    { level: "med", text: "Some assets have master records that differ from the asset index; these need pre-processing before transfer. Count unknown." },
+    { level: "med", text: "A separate system performance issue is under investigation and may affect Spokane staff availability for testing." }
+  ],
+  meetings: [
+    { date: "May 7, 2026", title: "Project team working session", note: "Confirmed org structure approach, identified master asset pre-processing need, discussed transfer options and department mapping criteria." }
+  ],
+  nextMeeting: ""
+};
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// header
+document.getElementById('h-client').textContent = DATA.client;
+document.getElementById('h-project').textContent = DATA.project;
+document.getElementById('h-updated').textContent = DATA.lastUpdated;
+const statusColors = { 'on-track': 'var(--green)', 'at-risk': '#ffb300', 'blocked': '#ef5350' };
+document.querySelector('#h-status .dot').style.background = statusColors[DATA.status] || 'var(--green)';
+document.getElementById('h-status-text').textContent = DATA.statusLabel;
+document.getElementById('summary').textContent = DATA.summary;
+
+// timeline
+document.getElementById('timeline').innerHTML = DATA.timeline.map(t => `
+  <li>
+    <span class="tl-marker tl-${t.status}"></span>
+    <span class="tl-label ${t.status==='done'?'tl-done-text':''}">${esc(t.label)}
+      ${t.status==='active' ? '<span class="badge active">In progress</span>' : ''}
+      ${t.status==='done' ? '<span class="badge done">Done</span>' : ''}
+    </span>
+    <span class="tl-date">${esc(t.date)}</span>
+  </li>`).join('');
+
+// action items with filters
+let fState = 'open', oState = 'all';
+function renderItems(){
+  const rows = DATA.actionItems.filter(i =>
+    (fState==='all' || (fState==='done')===i.done) &&
+    (oState==='all' || i.owner===oState));
+  document.getElementById('ai-body').innerHTML = rows.length ? rows.map(i => `
+    <tr class="${i.done?'item-done':''}">
+      <td class="desc">${esc(i.desc)}</td>
+      <td><span class="owner-chip ${i.owner==='tripleview'?'owner-tv':'owner-client'}">${esc(i.ownerName)}</span></td>
+      <td>${esc(i.due)}</td>
+      <td>${i.done?'<span class="check">&#10003;</span>':''}</td>
+    </tr>`).join('') : '<tr><td colspan="4" class="empty">Nothing here right now.</td></tr>';
+}
+document.getElementById('ai-filters').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  if (b.dataset.f){ fState = b.dataset.f; document.querySelectorAll('#ai-filters [data-f]').forEach(x=>x.classList.toggle('on', x===b)); }
+  if (b.dataset.o){ oState = b.dataset.o; document.querySelectorAll('#ai-filters [data-o]').forEach(x=>x.classList.toggle('on', x===b)); }
+  renderItems();
+});
+renderItems();
+
+// decisions
+document.getElementById('decisions').innerHTML = DATA.decisions.map(d => `
+  <div class="log-entry">
+    <div class="log-date">${esc(d.date)}</div>
+    <div>${esc(d.text)}</div>
+    ${d.note ? `<div class="log-note">${esc(d.note)}</div>` : ''}
+  </div>`).join('') || '<div class="empty">No decisions recorded yet.</div>';
+
+// risks
+document.getElementById('risks').innerHTML = DATA.risks.map(r => `
+  <div class="risk-entry">
+    <span class="badge risk-${r.level === 'high' ? 'high' : 'med'}">${r.level === 'high' ? 'High' : 'Watch'}</span>
+    <span>${esc(r.text)}</span>
+  </div>`).join('') || '<div class="empty">No open risks.</div>';
+
+// meetings
+document.getElementById('meetings').innerHTML =
+  (DATA.nextMeeting ? `<div class="log-entry"><div class="log-date">Next meeting</div><div>${esc(DATA.nextMeeting)}</div></div>` : '') +
+  (DATA.meetings.map(m => `
+  <div class="log-entry">
+    <div class="log-date">${esc(m.date)}</div>
+    <div>${esc(m.title)}</div>
+    ${m.note ? `<div class="log-note">${esc(m.note)}</div>` : ''}
+  </div>`).join('') || '<div class="empty">No meetings logged yet.</div>');
+</script>
+</body>
+</html>
