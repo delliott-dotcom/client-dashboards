@@ -10,6 +10,9 @@ client-dashboards/
   spokane/
     fa-org-restructure/
       index.html                  <- City of Spokane, FA Org Restructure
+  winston-salem/
+    v45-upgrade/
+      index.html                  <- City of Winston-Salem, FMS v45 Upgrade
   <client>/
     <project>/
       index.html
