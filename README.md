@@ -16,6 +16,8 @@ client-dashboards/
   confederated-tribes/
     ap-ach-setup/
       index.html                  <- Confederated Tribes, AP ACH Setup
+    purchasing-workflow/
+      index.html                  <- Confederated Tribes, Purchasing Workflow
   <client>/
     <project>/
       index.html
