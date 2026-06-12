@@ -13,6 +13,9 @@ client-dashboards/
   winston-salem/
     v45-upgrade/
       index.html                  <- City of Winston-Salem, FMS v45 Upgrade
+  confederated-tribes/
+    ap-ach-setup/
+      index.html                  <- Confederated Tribes, AP ACH Setup
   <client>/
     <project>/
       index.html
