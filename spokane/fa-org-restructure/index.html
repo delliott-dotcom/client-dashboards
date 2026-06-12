@@ -178,39 +178,45 @@ const DATA = {
   lastUpdated: "June 11, 2026",
   status: "on-track", // on-track | at-risk | blocked
   statusLabel: "On Track",
-  summary: "The Fixed Assets organization restructure will let Spokane accountants run depreciation and reporting by individual department, rather than under a single top-level org. The structure design is complete and validated, and new department org codes are being configured and tested in the test environment. Current focus: completing field code setup, testing asset transfers, and verifying department-level depreciation and inquiry results. Once testing wraps up, Tripleview will deliver a test plan and time estimate for the production rollout.",
+  summary: "The proof of concept is complete and approved. Tripleview has tested the full restructure end to end in-house: new department org codes, the bulk asset transfer process, and depreciation runs all work as designed, and the transfer automatically creates the matching GL entries. On the June 2 call the team confirmed the path forward: Tripleview delivers the setup procedures and transfer file examples, the City practices the process in its test environment, and the production transfer of roughly 850 internal service assets happens at year-end for a clean break in the books. A second phase will then open asset entry to department users (such as Water and ICM), and a possible follow-on effort to separate sub-assets from master assets is under review.",
   timeline: [
     { label: "Org structure design and validation", status: "done", date: "May 2026" },
-    { label: "New FA org codes configured in test environment", status: "active", date: "Jun 2026" },
-    { label: "Asset transfer testing (manual and bulk approaches)", status: "active", date: "Jun 2026" },
-    { label: "Department-level depreciation and inquiry verification", status: "future", date: "Jun 2026" },
-    { label: "Test plan and production time estimate delivered", status: "future", date: "TBD" },
-    { label: "Production implementation", status: "future", date: "TBD" }
+    { label: "Proof of concept: org setup, bulk transfer, and depreciation tested", status: "done", date: "Jun 2026" },
+    { label: "Setup procedures and transfer file examples delivered to the City", status: "active", date: "Jun 2026" },
+    { label: "City practice runs in the test environment", status: "future", date: "Summer 2026" },
+    { label: "Production transfer of internal service assets (~850)", status: "future", date: "Year-end 2026" },
+    { label: "Phase 2: department-level asset entry rollout", status: "future", date: "2027" }
   ],
   actionItems: [
-    { desc: "Complete FA org field code setup with corrected FA ledger account strings", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Week of Jun 9", done: false },
-    { desc: "Test depreciation by department and verify assets appear under the correct sub-orgs in inquiry", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Week of Jun 9", done: false },
-    { desc: "Test depreciation run after asset transfer and verify GL and FA reporting", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Week of Jun 9", done: false },
-    { desc: "Provide step-by-step setup procedures for Spokane staff", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Week of Jun 9", done: false },
-    { desc: "Determine which assets map to each new department org", owner: "client", ownerName: "Lauren / Spokane", due: "TBD", done: false },
-    { desc: "Decide between manual transfers and bulk transfer file approach", owner: "client", ownerName: "Lauren / Clint", due: "TBD", done: false },
-    { desc: "Count and document master assets with mismatched indices", owner: "client", ownerName: "Lauren", due: "TBD", done: false },
+    { desc: "Send setup procedures, meeting notes, and F4/XFAC transfer file examples to the City team", owner: "tripleview", ownerName: "Debbie & Joan (Tripleview)", due: "This week", done: false },
+    { desc: "Analyze options for separating sub-assets from master assets (388 identified)", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "TBD", done: false },
+    { desc: "Practice the bulk transfer process in the test environment", owner: "client", ownerName: "Clint / Chris W.", due: "After examples received", done: false },
+    { desc: "Plan the year-end GL entries that clear the old funds once assets move to fund 8020", owner: "client", ownerName: "Christi", due: "Year-end", done: false },
+    { desc: "Set up new FA org field codes and org configuration in test (0560, 0700)", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "Jun", done: true },
+    { desc: "Test the bulk F4/XFAC transfer end to end, including the new FA index and inquiry results", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "Jun", done: true },
+    { desc: "Run depreciation after transfer and verify results for both the old and new orgs", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "Jun", done: true },
+    { desc: "Confirm the transfer automatically generates the corresponding GL batch", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "Jun", done: true },
+    { desc: "Identify sub-assets associated with master assets (388 found)", owner: "client", ownerName: "Spokane", due: "May", done: true },
     { desc: "Design new org structure and validate approach", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "May", done: true },
-    { desc: "Confirm existing top-level org can remain intact", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "May", done: true },
-    { desc: "Initial asset transfer testing in test environment", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "May", done: true }
+    { desc: "Confirm existing top-level org can remain intact", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "May", done: true }
   ],
   decisions: [
+    { date: "Jun 2, 2026", text: "The City confirmed it is moving forward with the restructure as designed; the proof of concept was reviewed and approved.", note: "" },
+    { date: "Jun 2, 2026", text: "The production transfer of the ~850 internal service assets will wait until year-end.", note: "Gives a clean break: all current-year activity is booked to the old structure, then everything moves at once." },
+    { date: "Jun 2, 2026", text: "Transfers will use the bulk F4 file with the XFAC action code, keeping the same asset IDs.", note: "The transfer creates its own GL batch; remaining fund cleanup will be handled in the GL module." },
+    { date: "Jun 2, 2026", text: "Scope confirmed: only the governmental orgs receive new department orgs.", note: "" },
+    { date: "Jun 2, 2026", text: "The City does want to separate sub-assets from master assets eventually, to simplify disposals.", note: "Treated as a possible follow-on project; feasibility analysis is underway." },
     { date: "May 7, 2026", text: "Keep the existing top-level governmental org intact and add new department sub-orgs beneath it.", note: "No impact on GL accounts or existing inquiry rollups." },
     { date: "May 7, 2026", text: "Use the FA org field code for the restructure.", note: "GL expense accounts will not change; the new orgs are FA-side only." },
-    { date: "May 7, 2026", text: "Asset transfers will use the transfer action code rather than changing GL expense accounts.", note: "Transfer reference date must be current; transfers cannot be backdated." },
-    { date: "May 7, 2026", text: "Evaluate both manual transfers and an automated bulk transfer file before choosing the rollout method.", note: "" }
+    { date: "May 7, 2026", text: "Asset transfers will use the transfer action code rather than changing GL expense accounts.", note: "Transfer reference date must be current; transfers cannot be backdated." }
   ],
   risks: [
-    { level: "med", text: "Asset-to-department mapping criteria not yet defined; may require manual spreadsheet work before transfers can begin." },
-    { level: "med", text: "Some assets have master records that differ from the asset index; these need pre-processing before transfer. Count unknown." },
-    { level: "med", text: "A separate system performance issue is under investigation and may affect Spokane staff availability for testing." }
+    { level: "med", text: "The bulk transfer program needs a small update to handle the six-character org code format before production; the fix has been identified in testing." },
+    { level: "med", text: "Whether the 388 sub-assets can be cleanly separated from their master assets is still being analyzed; transfers can proceed either way." },
+    { level: "med", text: "Fixed asset responsibilities recently transitioned to new City staff; Tripleview is providing step-by-step procedures to support the handoff." }
   ],
   meetings: [
+    { date: "Jun 2, 2026", title: "Proof of concept review and path to production", note: "Joan walked through the completed in-house test: new org setup, bulk F4/XFAC transfer, depreciation run, and the auto-generated GL batch. Confirmed year-end timing for the production transfer, clarified the two-phase scope, and raised the sub-asset/master question for future analysis." },
     { date: "May 7, 2026", title: "Project team working session", note: "Confirmed org structure approach, identified master asset pre-processing need, discussed transfer options and department mapping criteria." }
   ],
   nextMeeting: ""
