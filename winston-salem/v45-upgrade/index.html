@@ -178,20 +178,20 @@ const DATA = {
   lastUpdated: "June 12, 2026",
   status: "on-track", // on-track | at-risk | blocked
   statusLabel: "On Track",
-  summary: "The upgrade agreement is signed and the project is underway. Tripleview will perform the in-place upgrade of FMS from v43 to v45 on the City's Test and Production environments, including all server components (eLink, web services, Net Listener, and Ask FMS), targeting a mid-July window so the City clears fiscal year-end first. City departments have already completed a first acceptance-testing pass on the development environment; the next step is consolidating any show-stopping findings into a single list with steps to reproduce, then clearing them in joint review meetings. Once Test is upgraded and the City gives written go-ahead, the Production upgrade runs over a weekend with City IT on standby, followed by four post-upgrade training sessions focused on what changed in v45 (especially Purchasing).",
+  summary: "All paperwork is complete and the production date is on the calendar. Tripleview will perform the in-place upgrade of FMS from v43 to v45 on the City's Test and Production environments, including all server components (eLink, web services, Net Listener, and Ask FMS). The City issued its purchase order on May 21, the signed agreement was finalized on June 10, and the City and its Finance department have aligned on the weekend of July 11 for the Production upgrade, with the Test environment upgraded ahead of that. City departments have already completed an acceptance-testing pass on the development environment; the immediate next step is the joint review of the outstanding UAT findings list, which the City is ready to begin. After Test is upgraded and the City gives written go-ahead, the Production upgrade runs over the July 11 weekend with City IT on standby, followed by four post-upgrade training sessions focused on what changed in v45 (especially Purchasing).",
   timeline: [
     { label: "Development environment upgraded to v45; department acceptance-testing pass", status: "done", date: "Spring 2026" },
-    { label: "Upgrade proposal drafted, revised, and signed", status: "done", date: "Jun 2026" },
-    { label: "UAT findings consolidated and cleared in joint review meetings", status: "active", date: "Jun 2026" },
-    { label: "Test environment upgraded to v45", status: "future", date: "Jul 2026" },
-    { label: "City testing in Test and written go/no-go approval", status: "future", date: "Jul 2026" },
-    { label: "Production upgrade (weekend window, City IT on standby)", status: "future", date: "Mid-Jul 2026" },
+    { label: "Proposal delivered and purchase order issued by the City", status: "done", date: "May 2026" },
+    { label: "Services agreement signed — all paperwork complete", status: "done", date: "Jun 10, 2026" },
+    { label: "Joint review of outstanding UAT findings", status: "active", date: "Jun 2026" },
+    { label: "Test environment upgraded to v45", status: "future", date: "Before Jul 11" },
+    { label: "City testing in Test and written go/no-go approval", status: "future", date: "Early Jul 2026" },
+    { label: "Production upgrade (City IT on standby)", status: "future", date: "Weekend of Jul 11" },
     { label: "Post-upgrade training: four remote sessions, v45 changes and Q&A", status: "future", date: "Summer 2026" }
   ],
   actionItems: [
-    { desc: "Consolidate UAT findings into one spreadsheet, flagging show-stopping (red) items with steps to reproduce", owner: "client", ownerName: "Cuong & Scott", due: "Jun", done: false },
-    { desc: "Schedule and lead the UAT issue-review meetings once the consolidated list is received", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Jun", done: false },
-    { desc: "Confirm the Test and Production upgrade dates with City IT", owner: "tripleview", ownerName: "Debbie & Mike (Tripleview)", due: "Jun", done: false },
+    { desc: "Schedule the first UAT issue-review session — the City is ready to review the outstanding findings list", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "This week", done: false },
+    { desc: "Confirm the Test upgrade date with City IT (Production is set for the weekend of July 11)", owner: "tripleview", ownerName: "Debbie & Mike (Tripleview)", due: "Jun", done: false },
     { desc: "Verify OS and SQL Server versions are current and supported before the Test upgrade", owner: "client", ownerName: "Cuong & Scott", due: "Before Test upgrade", done: false },
     { desc: "Hold SME-led ledger walkthroughs for users during June (Purchasing changed most in v45)", owner: "client", ownerName: "Ledger SMEs", due: "Jun", done: false },
     { desc: "Take full backups/snapshots of Test, then Production, before each upgrade", owner: "client", ownerName: "City IT", due: "Each upgrade window", done: false },
@@ -199,11 +199,16 @@ const DATA = {
     { desc: "Identify training session attendees and collect pre-session questions", owner: "client", ownerName: "Cuong & Tiffany", due: "Jul", done: false },
     { desc: "Install the new FMS client kit on workstations and validate scheduled tasks (DayStart, backups) after each upgrade", owner: "client", ownerName: "City IT", due: "Post-upgrade", done: false },
     { desc: "Draft and send the upgrade proposal, including the UAT review process and post-upgrade training", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "May", done: true },
-    { desc: "Route the proposal through City management and return the signed agreement", owner: "client", ownerName: "Cuong / Tiffany / Tom", due: "Jun", done: true },
+    { desc: "Align the Production upgrade window with City Finance (weekend of July 11)", owner: "client", ownerName: "Jeremy (City IT)", due: "May", done: true },
+    { desc: "Issue the purchase order for the upgrade", owner: "client", ownerName: "Tiffany / Jeremy", due: "May 21", done: true },
+    { desc: "Sign and return the services agreement", owner: "client", ownerName: "Tiffany", due: "Jun 10", done: true },
+    { desc: "Consolidate UAT findings into a single outstanding-items list for joint review", owner: "client", ownerName: "Cuong & Scott", due: "May", done: true },
     { desc: "Run the per-ledger business-continuity testing pass on the v45 development environment", owner: "client", ownerName: "Department testers", due: "May", done: true }
   ],
   decisions: [
-    { date: "Jun 11, 2026", text: "Signed services agreement received — Tripleview is confirmed to perform the upgrade end to end.", note: "Scheduling for the July window starts now." },
+    { date: "Jun 10, 2026", text: "Signed services agreement received — Tripleview is confirmed to perform the upgrade end to end.", note: "An e-signature glitch held things up for two weeks; all paperwork (agreement and purchase order) is now complete." },
+    { date: "May 21, 2026", text: "The City issued its purchase order for the upgrade.", note: "" },
+    { date: "May 18, 2026", text: "Production upgrade set for the weekend of July 11, aligned with the City's Finance department; Test will be upgraded ahead of that.", note: "Confirmed by Jeremy (City IT Project Coordinator) after meeting with Finance." },
     { date: "May 8, 2026", text: "The City stays on v45 for this upgrade; the move to v46 (which focuses on Accounts Receivable) will come later.", note: "v45 testing is already well underway and the City prefers not to pre-test a brand-new release." },
     { date: "May 8, 2026", text: "Upgrade window set for mid-July, not June.", note: "June is fiscal year-end crunch for City staff." },
     { date: "May 8, 2026", text: "Tripleview performs the upgrade end to end, including eLink, web services, and related server components; the City installs the new client kit on workstations from a package Tripleview provides.", note: "" },
@@ -213,7 +218,7 @@ const DATA = {
     { date: "Apr 21, 2026", text: "The upgrade is in-place on the existing Test and Production servers — no server migration. The development machine is retired afterward.", note: "" }
   ],
   risks: [
-    { level: "med", text: "The written go/no-go approval after Test UAT gates the Production date — keeping the issue-review meetings moving is what holds the mid-July target." },
+    { level: "high", text: "The UAT findings review has not started yet and the Production date (July 11 weekend) is fixed — the first review session needs to be scheduled now to leave time to resolve any show-stoppers and complete the Test upgrade." },
     { level: "med", text: "OS and SQL Server versions must be current and supported before the Test upgrade; this is a City prerequisite to verify up front." },
     { level: "med", text: "The City's development upgrade to v45 hit folder-structure and permission snags; the in-place Test/Production upgrade is expected to avoid them, but this will be watched during the Test phase." },
     { level: "med", text: "June is fiscal year-end for the City, so tester and staff availability is limited until July." }
@@ -222,7 +227,7 @@ const DATA = {
     { date: "May 8, 2026", title: "Upgrade scope and logistics call", note: "Debbie with Cuong and Scott (City IT). Clarified that Tripleview performs the upgrade end to end including server components, with the City handling workstation client installs. Agreed the UAT consolidation and review-meeting process, confirmed the mid-July window, walked through the weekend Production plan with City standby, and decided to stay on v45. Training proposal requested for after the upgrade." },
     { date: "Apr 21, 2026", title: "Upgrade ownership discussion", note: "Debbie with Cuong (City IT). Tripleview proposed performing the City's July upgrade under its new upgrade-ownership model; Cuong was supportive pending management approval. Reviewed lessons from the City's development upgrade to v45 and confirmed the July upgrade is in-place with no server migration." }
   ],
-  nextMeeting: "UAT issue-review sessions — scheduled once the City's consolidated findings list is received."
+  nextMeeting: "First UAT issue-review session — being scheduled now; the City's outstanding-items list is ready for joint review."
 };
 
 function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
