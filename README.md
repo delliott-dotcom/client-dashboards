@@ -18,6 +18,9 @@ client-dashboards/
       index.html                  <- Confederated Tribes, AP ACH Setup
     purchasing-workflow/
       index.html                  <- Confederated Tribes, Purchasing Workflow
+  sarasota/
+    historical-data/
+      index.html                  <- City of Sarasota, Historical Data
   <client>/
     <project>/
       index.html

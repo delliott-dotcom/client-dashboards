@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>City of Sarasota | Historical Data | Project Dashboard</title>
+<style>
+  :root {
+    --navy: #1b3a5c;
+    --navy-light: #2c5680;
+    --accent: #2e86ab;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --amber: #b26a00;
+    --amber-bg: #fff3e0;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #5f6b76;
+    --gray-bg: #eef1f4;
+    --border: #dde4ea;
+    --card-shadow: 0 1px 3px rgba(16, 42, 67, 0.08), 0 1px 2px rgba(16, 42, 67, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #f5f7f9;
+    color: #22303c;
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff;
+    padding: 28px 32px 22px;
+  }
+  .header-inner, main { max-width: 1080px; margin: 0 auto; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  header h1 { font-size: 1.5rem; font-weight: 600; }
+  header .client { font-size: 0.95rem; opacity: 0.85; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  header .meta { margin-top: 10px; font-size: 0.85rem; opacity: 0.8; }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 18px; border-radius: 999px;
+    font-weight: 600; font-size: 0.95rem;
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.35);
+  }
+  .status-pill .dot { width: 11px; height: 11px; border-radius: 50%; }
+  main { padding: 28px 32px 56px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--card-shadow); padding: 22px 24px; margin-bottom: 22px;
+  }
+  .card h2 {
+    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--gray); margin-bottom: 14px; font-weight: 700;
+  }
+  .summary-text { font-size: 1.02rem; }
+  /* timeline */
+  .timeline { list-style: none; }
+  .timeline li { display: flex; gap: 14px; padding: 7px 0; align-items: flex-start; }
+  .tl-marker { margin-top: 5px; width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; border: 2.5px solid; }
+  .tl-done   { background: var(--green); border-color: var(--green); }
+  .tl-active { background: #fff; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,134,171,0.25); }
+  .tl-future { background: #fff; border-color: #b8c4ce; }
+  .tl-label { flex: 1; }
+  .tl-done-text { color: var(--gray); }
+  .tl-date { font-size: 0.82rem; color: var(--gray); white-space: nowrap; }
+  .badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 9px;
+    border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .badge.done { background: var(--green-bg); color: var(--green); }
+  .badge.active { background: #e1f0f7; color: var(--accent); }
+  .badge.future { background: var(--gray-bg); color: var(--gray); }
+  .badge.risk-high { background: var(--red-bg); color: var(--red); }
+  .badge.risk-med { background: var(--amber-bg); color: var(--amber); }
+  /* action items */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filters button {
+    border: 1px solid var(--border); background: #fff; color: var(--gray);
+    border-radius: 999px; padding: 6px 16px; font-size: 0.85rem; cursor: pointer; font-weight: 600;
+  }
+  .filters button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); padding: 8px 10px; border-bottom: 2px solid var(--border); }
+  td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .owner-chip { font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .owner-tv { background: #e1f0f7; color: var(--accent); }
+  .owner-client { background: #ede7f6; color: #5e35b1; }
+  .item-done { color: var(--gray); }
+  .item-done .desc { text-decoration: line-through; }
+  .done-btn {
+    display: inline-block; font-size: 0.78rem; font-weight: 600;
+    color: var(--accent); border: 1.5px solid var(--accent); border-radius: 999px;
+    padding: 3px 12px; text-decoration: none; white-space: nowrap;
+  }
+  .done-btn:hover { background: var(--accent); color: #fff; }
+  .ai-hint { font-size: 0.82rem; color: var(--gray); margin-bottom: 12px; }
+  .check { color: var(--green); font-weight: 700; }
+  /* decisions / meetings */
+  .log-entry { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .log-entry:last-child { border-bottom: none; }
+  .log-date { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+  .log-note { font-size: 0.85rem; color: var(--gray); margin-top: 2px; }
+  .risk-entry { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .risk-entry:last-child { border-bottom: none; }
+  footer { text-align: center; color: var(--gray); font-size: 0.8rem; padding: 0 0 36px; }
+  .empty { color: var(--gray); font-style: italic; padding: 14px 4px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div class="client" id="h-client"></div>
+        <h1 id="h-project"></h1>
+      </div>
+      <div class="status-pill" id="h-status"><span class="dot"></span><span id="h-status-text"></span></div>
+    </div>
+    <div class="meta">Prepared by Tripleview Technologies &nbsp;|&nbsp; Last updated <span id="h-updated"></span></div>
+  </div>
+</header>
+<main>
+  <div class="card">
+    <h2>Current Status</h2>
+    <p class="summary-text" id="summary"></p>
+  </div>
+
+  <div class="card">
+    <h2>Timeline &amp; Milestones</h2>
+    <ul class="timeline" id="timeline"></ul>
+  </div>
+
+  <div class="card">
+    <h2>Action Items</h2>
+    <div class="ai-hint">Finished a task? Click <strong>Mark complete</strong> next to it. An email to Tripleview opens with the details filled in; just add your name and send. The dashboard is updated the same day.</div>
+    <div class="filters" id="ai-filters">
+      <button data-f="open" class="on">Open</button>
+      <button data-f="done">Completed</button>
+      <button data-f="all">All</button>
+      <span style="width:14px"></span>
+      <button data-o="all" class="on">Everyone</button>
+      <button data-o="tripleview">Tripleview</button>
+      <button data-o="client">City of Sarasota</button>
+    </div>
+    <table>
+      <thead><tr><th style="width:50%">Item</th><th>Owner</th><th>Target</th><th></th></tr></thead>
+      <tbody id="ai-body"></tbody>
+    </table>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Key Decisions</h2>
+      <div id="decisions"></div>
+    </div>
+    <div class="card">
+      <h2>Watch Items &amp; Risks</h2>
+      <div id="risks"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Meeting Log</h2>
+    <div id="meetings"></div>
+  </div>
+</main>
+<footer>Questions? Contact Debbie Elliott, Tripleview Technologies &middot; delliott@tripleview.com</footer>
+
+<script>
+const DATA = {
+  client: "City of Sarasota",
+  project: "Historical Data",
+  lastUpdated: "June 12, 2026",
+  status: "on-track", // on-track | at-risk | blocked
+  statusLabel: "On Track",
+  summary: "The City of Sarasota has moved its financials to Workday, and the historical purchasing, accounts payable, and general ledger document attachments remain in the legacy FMS system. Those documents — many tied to bonds, grants, and capital assets — need to stay retrievable for public records requests and audits. On the April 24 scoping call, the City and Tripleview walked through how attachments are stored and looked up in FMS and agreed on the direction: extract all attachment types in full, organized by year and document type, so the City can load them into Workday Prism and build retrieval reports there. Tripleview is now analyzing the FMS attachment structures to design the mass-extraction process and define the effort; a statement of work will follow. Tripleview sent the City a progress update on June 2, and the analysis is continuing.",
+  timeline: [
+    { label: "City requests retrieval of historical FMS attachment data", status: "done", date: "Apr 21, 2026" },
+    { label: "Scoping call: requirements, lookup needs, and extraction approach", status: "done", date: "Apr 24, 2026" },
+    { label: "Tripleview analysis of FMS attachment structures and extraction design", status: "active", date: "May–Jun 2026" },
+    { label: "Statement of work delivered to the City", status: "future", date: "Following analysis" },
+    { label: "Mass extraction runs, year by year and by document type", status: "future", date: "After SOW approval" },
+    { label: "City loads extracted documents and reference data into Workday Prism", status: "future", date: "Following extraction" }
+  ],
+  actionItems: [
+    { desc: "Complete the analysis of FMS attachment structures and design the mass-extraction approach", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "June", done: false },
+    { desc: "Prepare the statement of work for the extraction process and folder structure", owner: "tripleview", ownerName: "Debbie & Joan (Tripleview)", due: "After analysis", done: false },
+    { desc: "Follow up with the City once the extraction design is ready", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "June", done: false },
+    { desc: "Confirm record retention requirements with the City's Records Department", owner: "client", ownerName: "Debra (City Finance)", due: "TBD", done: false },
+    { desc: "Verify how Prism will store and link the extracted document files", owner: "client", ownerName: "John & George (City IT)", due: "TBD", done: false },
+    { desc: "Define the Prism tables and retrieval reports for the extracted documents", owner: "client", ownerName: "George & John (City IT)", due: "Later phase", done: false },
+    { desc: "Hold scoping call with the City's finance, AP, accounting, and IT team", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Apr 24", done: true },
+    { desc: "Confirm the legacy FMS system and its historical data remain accessible", owner: "client", ownerName: "John (City IT)", due: "Apr 24", done: true },
+    { desc: "Review the City's prior attachment archive process as a starting point", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "Apr", done: true }
+  ],
+  decisions: [
+    { date: "Apr 24, 2026", text: "Extract all attachment types in full rather than selecting specific accounts.", note: "Future records needs are unpredictable (bonds, audits, grants), so a complete extraction is safer than a partial one — even if some documents are never requested." },
+    { date: "Apr 24, 2026", text: "The extraction will run year by year, with output organized into folders by year and subfolders by document type (AP, purchasing, vendor).", note: "The volume of historical records is too large for a single run, and the year/type organization keeps documents findable." },
+    { date: "Apr 24, 2026", text: "Extracted documents will carry their reference data so they stay searchable by account, vendor, document index, and fiscal year.", note: "The City will load documents and reference data into Workday Prism and build retrieval reports there." },
+    { date: "Apr 24, 2026", text: "Fixed asset attachments are out of scope.", note: "Only a handful exist; general ledger, accounts payable, purchasing, and vendor documents are the focus." },
+    { date: "Apr 24, 2026", text: "Tripleview will provide a statement of work once the extraction design and effort are defined.", note: "" }
+  ],
+  risks: [
+    { level: "med", text: "How document files will be stored and linked inside Workday Prism is still being verified by City IT; the extraction will preserve the reference data either way." },
+    { level: "med", text: "Attachment dates in FMS follow the calendar year rather than the fiscal year, so the year-folder organization needs a mapping approach before extraction." },
+    { level: "med", text: "The City's retention requirements for bond, grant, and capital asset records are pending confirmation from the Records Department and may shape the final scope." }
+  ],
+  meetings: [
+    { date: "Apr 24, 2026", title: "Scoping call — historical attachment data requirements", note: "The City's finance, AP, accounting, and IT team walked Tripleview through how attachments are created and retrieved in FMS, confirmed the legacy system and its data remain accessible, and agreed on extracting all document types organized by year for loading into Workday Prism. Tripleview is designing the extraction and will follow with a statement of work." }
+  ],
+  nextMeeting: ""
+};
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// header
+document.getElementById('h-client').textContent = DATA.client;
+document.getElementById('h-project').textContent = DATA.project;
+document.getElementById('h-updated').textContent = DATA.lastUpdated;
+const statusColors = { 'on-track': 'var(--green)', 'at-risk': '#ffb300', 'blocked': '#ef5350' };
+document.querySelector('#h-status .dot').style.background = statusColors[DATA.status] || 'var(--green)';
+document.getElementById('h-status-text').textContent = DATA.statusLabel;
+document.getElementById('summary').textContent = DATA.summary;
+
+// timeline
+document.getElementById('timeline').innerHTML = DATA.timeline.map(t => `
+  <li>
+    <span class="tl-marker tl-${t.status}"></span>
+    <span class="tl-label ${t.status==='done'?'tl-done-text':''}">${esc(t.label)}
+      ${t.status==='active' ? '<span class="badge active">In progress</span>' : ''}
+      ${t.status==='done' ? '<span class="badge done">Done</span>' : ''}
+    </span>
+    <span class="tl-date">${esc(t.date)}</span>
+  </li>`).join('');
+
+// action items with filters
+let fState = 'open', oState = 'all';
+function mailtoFor(i){
+  const subject = `Task complete: ${DATA.client} / ${DATA.project}`;
+  const body = `Hi Debbie,\n\nMarking this task complete on the ${DATA.project} dashboard:\n\n"${i.desc}"\n\nCompleted by: (your name here)\nNotes (optional): \n`;
+  return `mailto:delliott@tripleview.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+function renderItems(){
+  const rows = DATA.actionItems.filter(i =>
+    (fState==='all' || (fState==='done')===i.done) &&
+    (oState==='all' || i.owner===oState));
+  document.getElementById('ai-body').innerHTML = rows.length ? rows.map(i => `
+    <tr class="${i.done?'item-done':''}">
+      <td class="desc">${esc(i.desc)}</td>
+      <td><span class="owner-chip ${i.owner==='tripleview'?'owner-tv':'owner-client'}">${esc(i.ownerName)}</span></td>
+      <td>${esc(i.due)}</td>
+      <td>${i.done?'<span class="check">&#10003;</span>':`<a class="done-btn" href="${mailtoFor(i)}">Mark complete</a>`}</td>
+    </tr>`).join('') : '<tr><td colspan="4" class="empty">Nothing here right now.</td></tr>';
+}
+document.getElementById('ai-filters').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  if (b.dataset.f){ fState = b.dataset.f; document.querySelectorAll('#ai-filters [data-f]').forEach(x=>x.classList.toggle('on', x===b)); }
+  if (b.dataset.o){ oState = b.dataset.o; document.querySelectorAll('#ai-filters [data-o]').forEach(x=>x.classList.toggle('on', x===b)); }
+  renderItems();
+});
+renderItems();
+
+// decisions
+document.getElementById('decisions').innerHTML = DATA.decisions.map(d => `
+  <div class="log-entry">
+    <div class="log-date">${esc(d.date)}</div>
+    <div>${esc(d.text)}</div>
+    ${d.note ? `<div class="log-note">${esc(d.note)}</div>` : ''}
+  </div>`).join('') || '<div class="empty">No decisions recorded yet.</div>';
+
+// risks
+document.getElementById('risks').innerHTML = DATA.risks.map(r => `
+  <div class="risk-entry">
+    <span class="badge risk-${r.level === 'high' ? 'high' : 'med'}">${r.level === 'high' ? 'High' : 'Watch'}</span>
+    <span>${esc(r.text)}</span>
+  </div>`).join('') || '<div class="empty">No open risks.</div>';
+
+// meetings
+document.getElementById('meetings').innerHTML =
+  (DATA.nextMeeting ? `<div class="log-entry"><div class="log-date">Next meeting</div><div>${esc(DATA.nextMeeting)}</div></div>` : '') +
+  (DATA.meetings.map(m => `
+  <div class="log-entry">
+    <div class="log-date">${esc(m.date)}</div>
+    <div>${esc(m.title)}</div>
+    ${m.note ? `<div class="log-note">${esc(m.note)}</div>` : ''}
+  </div>`).join('') || '<div class="empty">No meetings logged yet.</div>');
+</script>
+</body>
+</html>
