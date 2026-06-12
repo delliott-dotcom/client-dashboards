@@ -21,6 +21,9 @@ client-dashboards/
   sarasota/
     historical-data/
       index.html                  <- City of Sarasota, Historical Data
+  stevens-county/
+    v45-upgrade-coa-restructure/
+      index.html                  <- Stevens County, Upgrade to v45 and COA Restructure
   <client>/
     <project>/
       index.html

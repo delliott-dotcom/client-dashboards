@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Stevens County | Upgrade to v45 and COA Restructure | Project Dashboard</title>
+<style>
+  :root {
+    --navy: #1b3a5c;
+    --navy-light: #2c5680;
+    --accent: #2e86ab;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --amber: #b26a00;
+    --amber-bg: #fff3e0;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #5f6b76;
+    --gray-bg: #eef1f4;
+    --border: #dde4ea;
+    --card-shadow: 0 1px 3px rgba(16, 42, 67, 0.08), 0 1px 2px rgba(16, 42, 67, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #f5f7f9;
+    color: #22303c;
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff;
+    padding: 28px 32px 22px;
+  }
+  .header-inner, main { max-width: 1080px; margin: 0 auto; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  header h1 { font-size: 1.5rem; font-weight: 600; }
+  header .client { font-size: 0.95rem; opacity: 0.85; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  header .meta { margin-top: 10px; font-size: 0.85rem; opacity: 0.8; }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 18px; border-radius: 999px;
+    font-weight: 600; font-size: 0.95rem;
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.35);
+  }
+  .status-pill .dot { width: 11px; height: 11px; border-radius: 50%; }
+  main { padding: 28px 32px 56px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--card-shadow); padding: 22px 24px; margin-bottom: 22px;
+  }
+  .card h2 {
+    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--gray); margin-bottom: 14px; font-weight: 700;
+  }
+  .summary-text { font-size: 1.02rem; }
+  /* timeline */
+  .timeline { list-style: none; }
+  .timeline li { display: flex; gap: 14px; padding: 7px 0; align-items: flex-start; }
+  .tl-marker { margin-top: 5px; width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; border: 2.5px solid; }
+  .tl-done   { background: var(--green); border-color: var(--green); }
+  .tl-active { background: #fff; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,134,171,0.25); }
+  .tl-future { background: #fff; border-color: #b8c4ce; }
+  .tl-label { flex: 1; }
+  .tl-done-text { color: var(--gray); }
+  .tl-date { font-size: 0.82rem; color: var(--gray); white-space: nowrap; }
+  .badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 9px;
+    border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .badge.done { background: var(--green-bg); color: var(--green); }
+  .badge.active { background: #e1f0f7; color: var(--accent); }
+  .badge.future { background: var(--gray-bg); color: var(--gray); }
+  .badge.risk-high { background: var(--red-bg); color: var(--red); }
+  .badge.risk-med { background: var(--amber-bg); color: var(--amber); }
+  /* action items */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filters button {
+    border: 1px solid var(--border); background: #fff; color: var(--gray);
+    border-radius: 999px; padding: 6px 16px; font-size: 0.85rem; cursor: pointer; font-weight: 600;
+  }
+  .filters button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); padding: 8px 10px; border-bottom: 2px solid var(--border); }
+  td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .owner-chip { font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .owner-tv { background: #e1f0f7; color: var(--accent); }
+  .owner-client { background: #ede7f6; color: #5e35b1; }
+  .item-done { color: var(--gray); }
+  .item-done .desc { text-decoration: line-through; }
+  .done-btn {
+    display: inline-block; font-size: 0.78rem; font-weight: 600;
+    color: var(--accent); border: 1.5px solid var(--accent); border-radius: 999px;
+    padding: 3px 12px; text-decoration: none; white-space: nowrap;
+  }
+  .done-btn:hover { background: var(--accent); color: #fff; }
+  .ai-hint { font-size: 0.82rem; color: var(--gray); margin-bottom: 12px; }
+  .check { color: var(--green); font-weight: 700; }
+  /* decisions / meetings */
+  .log-entry { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .log-entry:last-child { border-bottom: none; }
+  .log-date { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+  .log-note { font-size: 0.85rem; color: var(--gray); margin-top: 2px; }
+  .risk-entry { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .risk-entry:last-child { border-bottom: none; }
+  footer { text-align: center; color: var(--gray); font-size: 0.8rem; padding: 0 0 36px; }
+  .empty { color: var(--gray); font-style: italic; padding: 14px 4px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div class="client" id="h-client"></div>
+        <h1 id="h-project"></h1>
+      </div>
+      <div class="status-pill" id="h-status"><span class="dot"></span><span id="h-status-text"></span></div>
+    </div>
+    <div class="meta">Prepared by Tripleview Technologies &nbsp;|&nbsp; Last updated <span id="h-updated"></span></div>
+  </div>
+</header>
+<main>
+  <div class="card">
+    <h2>Current Status</h2>
+    <p class="summary-text" id="summary"></p>
+  </div>
+
+  <div class="card">
+    <h2>Timeline &amp; Milestones</h2>
+    <ul class="timeline" id="timeline"></ul>
+  </div>
+
+  <div class="card">
+    <h2>Action Items</h2>
+    <div class="ai-hint">Finished a task? Click <strong>Mark complete</strong> next to it. An email to Tripleview opens with the details filled in; just add your name and send. The dashboard is updated the same day.</div>
+    <div class="filters" id="ai-filters">
+      <button data-f="open" class="on">Open</button>
+      <button data-f="done">Completed</button>
+      <button data-f="all">All</button>
+      <span style="width:14px"></span>
+      <button data-o="all" class="on">Everyone</button>
+      <button data-o="tripleview">Tripleview</button>
+      <button data-o="client">Stevens County</button>
+    </div>
+    <table>
+      <thead><tr><th style="width:50%">Item</th><th>Owner</th><th>Target</th><th></th></tr></thead>
+      <tbody id="ai-body"></tbody>
+    </table>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Key Decisions</h2>
+      <div id="decisions"></div>
+    </div>
+    <div class="card">
+      <h2>Watch Items &amp; Risks</h2>
+      <div id="risks"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Meeting Log</h2>
+    <div id="meetings"></div>
+  </div>
+</main>
+<footer>Questions? Contact Debbie Elliott, Tripleview Technologies &middot; delliott@tripleview.com</footer>
+
+<script>
+const DATA = {
+  client: "Stevens County",
+  project: "Upgrade to v45 and COA Restructure",
+  lastUpdated: "June 12, 2026",
+  status: "on-track", // on-track | at-risk | blocked
+  statusLabel: "On Track",
+  summary: "Stevens County and Tripleview are working two connected tracks: correcting batch-posting behavior in the County's current FMS II system, and laying the groundwork for an upgrade to FMS III (v45) with a restructured, 7-digit BARS-compatible chart of accounts. The posting issue has been diagnosed: the logic that rolls AP-related cash activity up to each fund's general cash line fires only in period 13, and the fix will make it apply in every period for the designated funds, starting with fund 146. On the April 23 working session the team confirmed that year-end period-13 handling stays exactly as it works today, and the County's new grant fund type (002) is up and running for receipting and journal entries, with one remaining wrinkle in vouchers entered through purchasing. Next, Tripleview refreshes its test copy of the County's data, completes and tests the posting fix, and responds to the County's April 24 cash-line analysis. After that, the team schedules the FMS roadshow sessions that kick off chart-of-accounts and upgrade planning in earnest.",
+  timeline: [
+    { label: "Batch posting issue reported and initial review", status: "done", date: "Jan–Feb 2026" },
+    { label: "Working sessions: cash-line posting diagnosed, roadshow introduced", status: "done", date: "Feb 2026" },
+    { label: "New grant fund type 002 live for receipts and journal entries", status: "done", date: "Apr 2026" },
+    { label: "Posting fix scoped: fund cash rollup to apply in all periods", status: "done", date: "Apr 23, 2026" },
+    { label: "Posting logic corrected and tested on a refreshed data copy", status: "active", date: "In progress" },
+    { label: "Fund type 002 voucher entry through purchasing resolved", status: "active", date: "In progress" },
+    { label: "FMS roadshow review sessions with County power users", status: "future", date: "TBD" },
+    { label: "Chart of accounts restructure design and FMS III (v45) upgrade", status: "future", date: "Planning" }
+  ],
+  actionItems: [
+    { desc: "Review and respond to the County's April 24 analysis of how cash lines are used in the AP process", owner: "tripleview", ownerName: "Debbie & Joan (Tripleview)", due: "This week", done: false },
+    { desc: "Arrange a refreshed copy of the County's data for testing", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "This week", done: false },
+    { desc: "Correct and test the AP batch posting logic so the fund cash rollup applies in all periods (fund 146 first)", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "After data refresh", done: false },
+    { desc: "Run a test voucher through purchasing, AP, and payment with fund type 002 and send results to Tripleview", owner: "client", ownerName: "Jill (County Auditor's Office)", due: "Open", done: false },
+    { desc: "Email the list of GL accounts needed for new fund 148", owner: "client", ownerName: "Jill (County Auditor's Office)", due: "Open", done: false },
+    { desc: "Send the rundown of ledgers in use, daily processes, and who handles them, ahead of the roadshow", owner: "client", ownerName: "Leslie, Lori & Jill (County)", due: "Open", done: false },
+    { desc: "Schedule the FMS roadshow sessions once prep material is in", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "After prep items", done: false },
+    { desc: "Confirm the fund type 002 cash-line connection is covered by the posting fix", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Apr", done: true },
+    { desc: "Diagnose why the fund cash rollup logic only applies in period 13", owner: "tripleview", ownerName: "Joan (Tripleview)", due: "Apr", done: true },
+    { desc: "Walk through live batch examples to confirm intended posting behavior fund by fund", owner: "client", ownerName: "Leslie & Jill (County)", due: "Apr", done: true },
+    { desc: "Share the client folder with ledger manuals and FMS III orientation material", owner: "tripleview", ownerName: "Debbie (Tripleview)", due: "Feb", done: true }
+  ],
+  decisions: [
+    { date: "Apr 23, 2026", text: "Year-end period-13 posting stays exactly as it works today: AP payments post to vouchers payable in period 13 and are reclassified to cash in January.", note: "Keeps the County in control of its January cutover timing — a practice that has worked for years." },
+    { date: "Apr 23, 2026", text: "The posting fix will make the fund-level cash rollup apply in all periods for the designated funds, starting with fund 146; funds already posting correctly are left untouched.", note: "Scoped narrowly so working behavior is not disturbed." },
+    { date: "Apr 23, 2026", text: "Tripleview will refresh its test copy of the County's data before making and testing changes.", note: "Ensures the fix is verified against the County's current configuration." },
+    { date: "Apr 23, 2026", text: "New fund 148 will be configured by replicating fund 146's setup once 146 is verified.", note: "Not urgent — the fund has no activity yet." },
+    { date: "Apr 13, 2026", text: "The new fund type 002 cash-line connection will be handled by the posting logic fix rather than a separate change.", note: "" },
+    { date: "Feb 26, 2026", text: "The County's existing customizations carry over unchanged in the FMS III upgrade and will be reviewed together before upgrading.", note: "" },
+    { date: "Feb 26, 2026", text: "Hold a multi-session FMS roadshow (about six hours, split across days) to reset how the County uses the software and plan the upgrade.", note: "Attendees are the County's power users; prep material exchanged by email first." },
+    { date: "Feb 4, 2026", text: "Target a 7-digit BARS-compatible chart of accounts as part of the upgrade, pending a full analysis.", note: "Meets Washington State reporting requirements; the County is open to a fresh start on the chart rather than converting history." }
+  ],
+  risks: [
+    { level: "high", text: "Grant season is now active, and grant spending runs through year-end. The fund type 002 voucher issue in purchasing needs resolution so departments can charge grant activity correctly without manual workarounds." },
+    { level: "med", text: "A chart of accounts restructure touches every account template, report, and inquiry. Scope and approach will be confirmed during the roadshow before any upgrade dates are set." },
+    { level: "med", text: "The roadshow is not yet scheduled and its prep items are still open on both sides; upgrade planning is paused until those land." }
+  ],
+  meetings: [
+    { date: "Apr 23, 2026", title: "New fund type working session", note: "Walked through live batches on screen and confirmed period-13 year-end behavior stays as-is. Scoped the all-period cash rollup fix starting with fund 146, agreed on a refreshed data copy before changes, and set a County-side test of fund type 002 through purchasing. Jill followed up the next day with a detailed cash-line analysis for Tripleview review." },
+    { date: "Feb 26, 2026", title: "Field code and batch types discussion", note: "Confirmed the intended cash rollup behavior fund by fund and that the fix must apply in every period, with Joan taking ownership. Introduced the FMS roadshow concept, confirmed customizations carry over in an upgrade, and kicked off the prep-material exchange by email." },
+    { date: "Feb 4, 2026", title: "Chart of accounts review", note: "Reviewed the batch posting and year-end balance items behind the County's support case, and opened the bigger conversation: restructuring the chart of accounts to 7-digit BARS codes as part of an FMS III upgrade. Agreed to resolve the open support items first, then plan the roadshow." }
+  ],
+  nextMeeting: ""
+};
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// header
+document.getElementById('h-client').textContent = DATA.client;
+document.getElementById('h-project').textContent = DATA.project;
+document.getElementById('h-updated').textContent = DATA.lastUpdated;
+const statusColors = { 'on-track': 'var(--green)', 'at-risk': '#ffb300', 'blocked': '#ef5350' };
+document.querySelector('#h-status .dot').style.background = statusColors[DATA.status] || 'var(--green)';
+document.getElementById('h-status-text').textContent = DATA.statusLabel;
+document.getElementById('summary').textContent = DATA.summary;
+
+// timeline
+document.getElementById('timeline').innerHTML = DATA.timeline.map(t => `
+  <li>
+    <span class="tl-marker tl-${t.status}"></span>
+    <span class="tl-label ${t.status==='done'?'tl-done-text':''}">${esc(t.label)}
+      ${t.status==='active' ? '<span class="badge active">In progress</span>' : ''}
+      ${t.status==='done' ? '<span class="badge done">Done</span>' : ''}
+    </span>
+    <span class="tl-date">${esc(t.date)}</span>
+  </li>`).join('');
+
+// action items with filters
+let fState = 'open', oState = 'all';
+function mailtoFor(i){
+  const subject = `Task complete: ${DATA.client} / ${DATA.project}`;
+  const body = `Hi Debbie,\n\nMarking this task complete on the ${DATA.project} dashboard:\n\n"${i.desc}"\n\nCompleted by: (your name here)\nNotes (optional): \n`;
+  return `mailto:delliott@tripleview.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+function renderItems(){
+  const rows = DATA.actionItems.filter(i =>
+    (fState==='all' || (fState==='done')===i.done) &&
+    (oState==='all' || i.owner===oState));
+  document.getElementById('ai-body').innerHTML = rows.length ? rows.map(i => `
+    <tr class="${i.done?'item-done':''}">
+      <td class="desc">${esc(i.desc)}</td>
+      <td><span class="owner-chip ${i.owner==='tripleview'?'owner-tv':'owner-client'}">${esc(i.ownerName)}</span></td>
+      <td>${esc(i.due)}</td>
+      <td>${i.done?'<span class="check">&#10003;</span>':`<a class="done-btn" href="${mailtoFor(i)}">Mark complete</a>`}</td>
+    </tr>`).join('') : '<tr><td colspan="4" class="empty">Nothing here right now.</td></tr>';
+}
+document.getElementById('ai-filters').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  if (b.dataset.f){ fState = b.dataset.f; document.querySelectorAll('#ai-filters [data-f]').forEach(x=>x.classList.toggle('on', x===b)); }
+  if (b.dataset.o){ oState = b.dataset.o; document.querySelectorAll('#ai-filters [data-o]').forEach(x=>x.classList.toggle('on', x===b)); }
+  renderItems();
+});
+renderItems();
+
+// decisions
+document.getElementById('decisions').innerHTML = DATA.decisions.map(d => `
+  <div class="log-entry">
+    <div class="log-date">${esc(d.date)}</div>
+    <div>${esc(d.text)}</div>
+    ${d.note ? `<div class="log-note">${esc(d.note)}</div>` : ''}
+  </div>`).join('') || '<div class="empty">No decisions recorded yet.</div>';
+
+// risks
+document.getElementById('risks').innerHTML = DATA.risks.map(r => `
+  <div class="risk-entry">
+    <span class="badge risk-${r.level === 'high' ? 'high' : 'med'}">${r.level === 'high' ? 'High' : 'Watch'}</span>
+    <span>${esc(r.text)}</span>
+  </div>`).join('') || '<div class="empty">No open risks.</div>';
+
+// meetings
+document.getElementById('meetings').innerHTML =
+  (DATA.nextMeeting ? `<div class="log-entry"><div class="log-date">Next meeting</div><div>${esc(DATA.nextMeeting)}</div></div>` : '') +
+  (DATA.meetings.map(m => `
+  <div class="log-entry">
+    <div class="log-date">${esc(m.date)}</div>
+    <div>${esc(m.title)}</div>
+    ${m.note ? `<div class="log-note">${esc(m.note)}</div>` : ''}
+  </div>`).join('') || '<div class="empty">No meetings logged yet.</div>');
+</script>
+</body>
+</html>
