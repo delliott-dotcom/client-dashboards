@@ -92,6 +92,13 @@
   .owner-client { background: #ede7f6; color: #5e35b1; }
   .item-done { color: var(--gray); }
   .item-done .desc { text-decoration: line-through; }
+  .done-btn {
+    display: inline-block; font-size: 0.78rem; font-weight: 600;
+    color: var(--accent); border: 1.5px solid var(--accent); border-radius: 999px;
+    padding: 3px 12px; text-decoration: none; white-space: nowrap;
+  }
+  .done-btn:hover { background: var(--accent); color: #fff; }
+  .ai-hint { font-size: 0.82rem; color: var(--gray); margin-bottom: 12px; }
   .check { color: var(--green); font-weight: 700; }
   /* decisions / meetings */
   .log-entry { padding: 12px 0; border-bottom: 1px solid var(--border); }
@@ -130,6 +137,7 @@
 
   <div class="card">
     <h2>Action Items</h2>
+    <div class="ai-hint">Finished a task? Click <strong>Mark complete</strong> next to it. An email to Tripleview opens with the details filled in; just add your name and send. The dashboard is updated the same day.</div>
     <div class="filters" id="ai-filters">
       <button data-f="open" class="on">Open</button>
       <button data-f="done">Completed</button>
@@ -232,6 +240,11 @@ document.getElementById('timeline').innerHTML = DATA.timeline.map(t => `
 
 // action items with filters
 let fState = 'open', oState = 'all';
+function mailtoFor(i){
+  const subject = `Task complete: ${DATA.client} / ${DATA.project}`;
+  const body = `Hi Debbie,\n\nMarking this task complete on the ${DATA.project} dashboard:\n\n"${i.desc}"\n\nCompleted by: (your name here)\nNotes (optional): \n`;
+  return `mailto:delliott@tripleview.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 function renderItems(){
   const rows = DATA.actionItems.filter(i =>
     (fState==='all' || (fState==='done')===i.done) &&
@@ -241,7 +254,7 @@ function renderItems(){
       <td class="desc">${esc(i.desc)}</td>
       <td><span class="owner-chip ${i.owner==='tripleview'?'owner-tv':'owner-client'}">${esc(i.ownerName)}</span></td>
       <td>${esc(i.due)}</td>
-      <td>${i.done?'<span class="check">&#10003;</span>':''}</td>
+      <td>${i.done?'<span class="check">&#10003;</span>':`<a class="done-btn" href="${mailtoFor(i)}">Mark complete</a>`}</td>
     </tr>`).join('') : '<tr><td colspan="4" class="empty">Nothing here right now.</td></tr>';
 }
 document.getElementById('ai-filters').addEventListener('click', e => {
